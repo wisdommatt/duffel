@@ -1,0 +1,30 @@
+services:
+  lgtm:
+    image: grafana/otel-lgtm:0.28.0
+    container_name: lgtm
+    ports:
+      - "3000:3000" # Grafana UI (admin / admin)
+      - "4317:4317" # OTLP gRPC
+      - "4318:4318" # OTLP HTTP
+      - "9090:9090" # Prometheus
+    volumes:
+      - lgtm-grafana:/data/grafana
+      - lgtm-prometheus:/data/prometheus
+      - lgtm-loki:/data/loki
+      - lgtm-tempo:/data/tempo
+    environment:
+      GF_PATHS_DATA: /data/grafana
+    # Come back up after a Docker daemon restart, but stay down if stopped by hand.
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+volumes:
+  lgtm-grafana:
+  lgtm-prometheus:
+  lgtm-loki:
+  lgtm-tempo:

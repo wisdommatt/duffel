@@ -52,6 +52,7 @@ func main() {
 	router.Get("/health", h.health)
 	router.Get("/status", h.status)
 	router.Get("/ping", h.ping)
+	router.Post("/search", h.search)
 
 	server := &http.Server{
 		Addr:    listenAddr,
